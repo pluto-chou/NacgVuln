@@ -1,0 +1,29 @@
+{
+  "title": "NacgVuln: Negative-aware and Chunk-enhanced Generative Line-level Vulnerability Localization",
+  "upload_type": "software",
+  "creators": [
+    {
+      "name": "Huang, Shuai",
+      "affiliation": "School of Computer Science and Engineering, Sichuan University of Science & Engineering, Yibin 644000, China"
+    }
+  ],
+  "description": "Replication package for NacgVuln, a negative-aware and chunk-enhanced generative framework for line-level vulnerability localization.",
+  "license": "MIT",
+  "keywords": [
+    "software vulnerability localization",
+    "line-level vulnerability detection",
+    "CodeT5",
+    "Big-Vul",
+    "negative-aware training",
+    "chunk inference",
+    "software security"
+  ],
+  "version": "1.0.0",
+  "related_identifiers": [
+    {
+      "identifier": "https://github.com/pluto-chou/NacgVuln",
+      "relation": "isSupplementTo",
+      "resource_type": "software"
+    }
+  ]
+}

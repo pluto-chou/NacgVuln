@@ -1,0 +1,77 @@
+# Python bytecode and caches
+__pycache__/
+*.py[cod]
+*$py.class
+.ipynb_checkpoints/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+conda-env/
+*.egg-info/
+
+# IDE and OS files
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Logs and temporary outputs
+*.log
+nohup.out
+output_*.log
+logs/
+runs/
+runs_*/
+ablation_runs/*/logs/
+
+# Hugging Face cache and pretrained model cache
+hf_cache/
+hf_cache_clean/
+.cache/
+
+# Large checkpoints and model weights
+checkpoints/
+checkpoints_*/
+checkpoints_func_10seed/
+checkpoints_seq2seq_10seed/
+*.pt
+*.pth
+*.ckpt
+*.bin
+*.safetensors
+
+# Generated datasets and raw data
+data/dataset.csv
+data/train.csv
+data/val.csv
+data/test.csv
+data/raw/
+data/processed/
+
+# Large evaluation details; keep summaries and small samples only
+**/*_details.csv
+!results/cppcheck/cppcheck_eval_details.csv
+!results/**/sample_*.csv
+!results/**/*_details_sample.csv
+
+# Generated figure artifacts
+figures/paper_figures/*.png
+figures/paper_figures/*.pdf
+figures/paper_figures/*.svg
+
+# Local package/build artifacts
+build/
+dist/
+*.tar.gz
+*.zip
+
+# Secrets and local machine configuration
+.env
+.env.*
+*.key
+*.pem

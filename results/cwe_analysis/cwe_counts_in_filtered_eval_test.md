@@ -1,0 +1,21 @@
+# CWE counts in filtered vulnerable test set
+
+| CWE     |   #Functions |
+|:--------|-------------:|
+| UNKNOWN |           13 |
+| CWE-119 |           10 |
+| CWE-264 |            5 |
+| CWE-20  |            3 |
+| CWE-125 |            3 |
+| CWE-399 |            2 |
+| CWE-189 |            2 |
+| CWE-476 |            2 |
+| CWE-362 |            2 |
+| CWE-19  |            1 |
+| CWE-772 |            1 |
+| CWE-732 |            1 |
+| CWE-416 |            1 |
+| CWE-269 |            1 |
+| CWE-617 |            1 |
+| CWE-190 |            1 |
+| CWE-787 |            1 |

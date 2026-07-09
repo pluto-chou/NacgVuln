@@ -1,0 +1,14 @@
+cff-version: 1.2.0
+title: "NacgVuln: Negative-aware and Chunk-enhanced Generative Line-level Vulnerability Localization"
+message: "If you use this software, please cite it as below."
+type: software
+authors:
+  - family-names: "Huang"
+    given-names: "Shuai"
+    alias: "pluto-chou"
+    affiliation: "School of Computer Science and Engineering, Sichuan University of Science & Engineering, Yibin 644000, China"
+version: 1.0.0
+date-released: 2026-07-09
+license: MIT
+repository-code: "https://github.com/pluto-chou/NacgVuln"
+url: "https://github.com/pluto-chou/NacgVuln"
