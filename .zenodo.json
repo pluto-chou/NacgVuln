@@ -24,6 +24,13 @@
       "identifier": "https://github.com/pluto-chou/NacgVuln",
       "relation": "isSupplementTo",
       "resource_type": "software"
+    },
+    {
+      "identifier": "https://doi.org/10.5281/zenodo.21273222",
+      "relation": "isSupplementTo",
+      "scheme": "url"
     }
-  ]
+  ],
+  "doi": "10.5281/zenodo.21273222",
+  "url": "https://doi.org/10.5281/zenodo.21273222"
 }

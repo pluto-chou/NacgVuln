@@ -5,7 +5,7 @@
 **Author:** Shuai Huang (`pluto-chou`)  
 **Affiliation:** School of Computer Science and Engineering, Sichuan University of Science & Engineering, Yibin 644000, China  
 **License:** MIT  
-**Zenodo DOI:** not assigned yet; archive the first public GitHub release on Zenodo and then update this field
+**Zenodo DOI:** [10.5281/zenodo.21273222](https://doi.org/10.5281/zenodo.21273222)
 
 NacgVuln is a negative-aware and chunk-enhanced generative framework for line-level vulnerability localization in C/C++ source code. It extends a LocVul-style Sequence-to-Sequence localization pipeline by explicitly modeling clean functions with a `<NO_VULN>` target, applying chunk-based training and inference to long functions, and mapping generated snippets back to concrete source-code lines through similarity replacement and ranking.
 
@@ -182,11 +182,11 @@ The current archived main results report the following 10-seed mean performance:
 
 ## Code and Data Availability
 
-The source code, scripts, configuration files, and processed experimental outputs supporting this study are provided in this repository. The raw Big-Vul dataset is not redistributed; instructions for obtaining and preprocessing it are provided in the documentation. For manuscript submission, a Zenodo DOI is recommended after creating the first public GitHub release.
+The source code, scripts, configuration files, and processed experimental outputs supporting this study are provided in this repository. The raw Big-Vul dataset is not redistributed; instructions for obtaining and preprocessing it are provided in the documentation. For manuscript submission, a Zenodo DOI: 10.5281/zenodo.21273222.
 
 ## Citation
 
-Please cite the software using [`CITATION.cff`](CITATION.cff). After Zenodo archives the first public release, add the generated DOI to `README.md`, `CITATION.cff`, `.zenodo.json`, and `docs/code_availability_statement.md`.
+Please cite the software using [`CITATION.cff`](CITATION.cff) or the archived Zenodo record: https://doi.org/10.5281/zenodo.21273222.
 
 ## License
 

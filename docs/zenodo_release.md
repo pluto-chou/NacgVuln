@@ -1,37 +1,20 @@
-# Zenodo Release Notes
+# Zenodo Release
 
-## Is a Zenodo DOI Required?
+## DOI
 
-A Zenodo DOI is strongly recommended for manuscript submission because it freezes the exact repository version used for the paper. It is not generated until after a public GitHub release is created and archived by Zenodo.
+Version DOI: 10.5281/zenodo.21273222  
+DOI URL: https://doi.org/10.5281/zenodo.21273222
 
-## Repository Metadata
+## Repository
 
-| Field | Value |
-|---|---|
-| Title | NacgVuln: Negative-aware and Chunk-enhanced Generative Line-level Vulnerability Localization |
-| Author | Shuai Huang |
-| Affiliation | School of Computer Science and Engineering, Sichuan University of Science & Engineering, Yibin 644000, China |
-| Repository | https://github.com/pluto-chou/NacgVuln |
-| License | MIT |
-| Version | v1.0.0 |
+GitHub repository: https://github.com/pluto-chou/NacgVuln
 
-## Suggested Release Procedure
+## Release Status
 
-1. Push this repository to GitHub.
-2. Confirm the repository is public.
-3. Create a GitHub release with tag `v1.0.0`.
-4. Connect the repository to Zenodo.
-5. Let Zenodo archive the GitHub release and mint the DOI.
-6. Update these files with the version DOI:
+The repository has been archived on Zenodo. Use the DOI above in the manuscript, README, CITATION.cff, and code availability statement.
 
-```text
-README.md
-CITATION.cff
-.zenodo.json
-docs/code_availability_statement.md
-docs/zenodo_release.md
-```
+## Notes
 
-## Files Excluded from GitHub
-
-Large checkpoints, raw datasets, Hugging Face caches, and logs are excluded by `.gitignore`. If needed, attach large checkpoints as Zenodo release files.
+- Prefer citing the version DOI when referring to the exact replication package used in the manuscript.
+- Keep the GitHub repository public.
+- If future releases are created, Zenodo may mint a new version DOI.

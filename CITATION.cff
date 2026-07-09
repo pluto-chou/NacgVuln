@@ -11,4 +11,5 @@ version: 1.0.0
 date-released: 2026-07-09
 license: MIT
 repository-code: "https://github.com/pluto-chou/NacgVuln"
-url: "https://github.com/pluto-chou/NacgVuln"
+url: https://doi.org/10.5281/zenodo.21273222
+doi: 10.5281/zenodo.21273222
