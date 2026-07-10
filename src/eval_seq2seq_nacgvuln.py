@@ -507,9 +507,11 @@ def _build_line_chunks(full_text: str) -> List[str]:
     chunks: List[str] = []
     start = 0
     n = len(lines)
+
     while start < n:
         tok_sum = 0
         end = start
+
         while end < n:
             add = line_tok[end]
             if end == start and add > max_tok:
@@ -520,14 +522,29 @@ def _build_line_chunks(full_text: str) -> List[str]:
             tok_sum += add
             end += 1
 
+        # Safety guard: if no line was consumed for any unexpected reason,
+        # force progress to avoid an infinite loop.
+        if end <= start:
+            end = start + 1
+
         chunk = "\n".join(lines[start:end])
         chunks.append(chunk)
 
         if end >= n:
             break
-        start = max(0, end - stride)
-        if start == end:
-            start += 1
+
+        # Critical fix:
+        # The previous implementation used:
+        #     start = max(0, end - stride)
+        # If stride >= chunk_len, start could stay unchanged, causing an infinite loop.
+        chunk_len = end - start
+        effective_stride = min(stride, max(0, chunk_len - 1))
+        next_start = end - effective_stride
+
+        if next_start <= start:
+            next_start = start + 1
+
+        start = next_start
 
     return chunks
 
