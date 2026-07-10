@@ -725,22 +725,40 @@ except Exception as e:
 # --------------------------
 # Quick test generation (optional)
 # --------------------------
-logger.info("Quick testing generation on a few samples...")
-model.eval()
-gen_model = model.module if hasattr(model, "module") else model
+if args.QUICK_TEST == "yes":
+    logger.info("Quick testing generation on a few samples...")
+    model.eval()
+    gen_model = model.module if hasattr(model, "module") else model
 
-sample_n = min(3, len(test_df))
-for i in range(sample_n):
-    code = test_df["Text"].iloc[i]
-    gt = str(test_df["Lines"].iloc[i])
+    sample_n = min(int(args.QUICK_TEST_SAMPLES), len(test_df))
+    quick_max_length = min(int(args.QUICK_TEST_MAX_LENGTH), int(max_len_lines))
+    quick_num_beams = max(1, int(args.QUICK_TEST_BEAMS))
 
-    inputs = tokenizer(code, return_tensors="pt", truncation=True, padding="max_length", max_length=MAX_INPUT_LEN).to(device)
-    with torch.no_grad():
-        pred_ids = gen_model.generate(**inputs, max_length=max_len_lines, num_beams=4)
-    pred = tokenizer.decode(pred_ids[0], skip_special_tokens=True)
+    for i in range(sample_n):
+        code = test_df["Text"].iloc[i]
+        gt = str(test_df["Lines"].iloc[i])
 
-    logger.info("-" * 60)
-    logger.info(f"GT:   {gt[:200]}")
-    logger.info(f"PRED: {pred[:200]}")
+        inputs = tokenizer(
+            code,
+            return_tensors="pt",
+            truncation=True,
+            padding="max_length",
+            max_length=MAX_INPUT_LEN,
+        ).to(device)
+
+        with torch.no_grad():
+            pred_ids = gen_model.generate(
+                **inputs,
+                max_length=quick_max_length,
+                num_beams=quick_num_beams,
+            )
+
+        pred = tokenizer.decode(pred_ids[0], skip_special_tokens=True)
+
+        logger.info("-" * 60)
+        logger.info(f"GT:   {gt[:200]}")
+        logger.info(f"PRED: {pred[:200]}")
+else:
+    logger.info("QUICK_TEST=no: skipped post-training quick generation.")
 
 logger.info("Done.")
