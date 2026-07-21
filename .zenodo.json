@@ -1,13 +1,14 @@
 {
   "title": "NacgVuln: Negative-aware and Chunk-enhanced Generative Line-level Vulnerability Localization",
   "upload_type": "software",
+  "access_right": "open",
   "creators": [
     {
       "name": "Huang, Shuai",
       "affiliation": "School of Computer Science and Engineering, Sichuan University of Science & Engineering, Yibin 644000, China"
     }
   ],
-  "description": "Replication package for NacgVuln, a negative-aware and chunk-enhanced generative framework for line-level vulnerability localization.",
+  "description": "Replication package for NacgVuln, a negative-aware and chunk-enhanced generative framework for line-level vulnerability localization. The archive contains source code, configuration files, documentation, and processed experimental results. Model checkpoints and third-party Big-Vul CSV files are not distributed and must be regenerated or obtained from their documented sources.",
   "license": "MIT",
   "keywords": [
     "software vulnerability localization",
@@ -18,19 +19,13 @@
     "chunk inference",
     "software security"
   ],
-  "version": "1.0.0",
+  "version": "1.0.1",
   "related_identifiers": [
     {
       "identifier": "https://github.com/pluto-chou/NacgVuln",
       "relation": "isSupplementTo",
       "resource_type": "software"
-    },
-    {
-      "identifier": "https://doi.org/10.5281/zenodo.21273222",
-      "relation": "isSupplementTo",
-      "scheme": "url"
     }
   ],
-  "doi": "10.5281/zenodo.21273222",
-  "url": "https://doi.org/10.5281/zenodo.21273222"
+  "notes": "Pretrained and fine-tuned model checkpoints are intentionally excluded. Reproduction starts from the documented public CodeT5-base and CodeBERT-base models."
 }

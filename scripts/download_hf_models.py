@@ -1,202 +1,208 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
+"""Download and validate the pretrained models used by NacgVuln.
 
+By default, the script creates these repository-local directories:
+
+- hf_cache/codet5-base for Salesforce/codet5-base
+- hf_cache/codebert-base for microsoft/codebert-base
+
+Examples:
+    python scripts/download_hf_models.py --target-dir ./hf_cache
+    python scripts/download_hf_models.py --target-dir ./hf_cache --force
+    python scripts/download_hf_models.py --target-dir ./hf_cache \
+        --hf-endpoint https://hf-mirror.com
 """
-下载并校验两个本地模型目录：
-1) Salesforce/codet5-base
-2) microsoft/codebert-base
 
-默认会在 --target_dir 下创建：
-- codet5-base
-- codebert-base
-
-示例：
-python download_code_both.py --target_dir ./hf_cache --force
-python download_code_both.py --target_dir ./hf_cache --hf_endpoint https://hf-mirror.com --force
-"""
+from __future__ import annotations
 
 import argparse
 import json
 import os
 import shutil
-import sys
 from pathlib import Path
-from typing import Optional
+from typing import Dict, Iterable, Optional
 
-def eprint(*args, **kwargs):
-    print(*args, file=sys.stderr, **kwargs)
-
-
-def parse_args():
-    ap = argparse.ArgumentParser(description="下载并校验 CodeT5 + CodeBERT 本地目录")
-    ap.add_argument("--target_dir", required=True, help="根目录；脚本会在其下创建 codet5-base 和 codebert-base")
-    ap.add_argument("--cache_dir", default=None, help="可选：transformers cache_dir")
-    ap.add_argument("--hf_endpoint", default=None, help="可选：例如 https://hf-mirror.com")
-    ap.add_argument("--force", action="store_true", help="如果子目录已存在，先删除再重下")
-    return ap.parse_args()
-
-
-def remove_dir(path: Path):
-    if path.exists():
-        shutil.rmtree(path)
+MODEL_SPECS: Dict[str, Dict[str, str]] = {
+    "codet5": {
+        "model_id": "Salesforce/codet5-base",
+        "subdir": "codet5-base",
+        "kind": "seq2seq",
+    },
+    "codebert": {
+        "model_id": "microsoft/codebert-base",
+        "subdir": "codebert-base",
+        "kind": "encoder",
+    },
+}
 
 
-def ensure_dir(path: Path):
-    path.mkdir(parents=True, exist_ok=True)
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="Download CodeT5-base and CodeBERT-base into local directories."
+    )
+    parser.add_argument(
+        "--target-dir",
+        "--target_dir",
+        dest="target_dir",
+        type=Path,
+        default=Path("./hf_cache"),
+        help="Root directory for the local model folders (default: ./hf_cache).",
+    )
+    parser.add_argument(
+        "--cache-dir",
+        "--cache_dir",
+        dest="cache_dir",
+        type=Path,
+        default=None,
+        help="Optional Hugging Face download cache directory.",
+    )
+    parser.add_argument(
+        "--hf-endpoint",
+        "--hf_endpoint",
+        dest="hf_endpoint",
+        default=None,
+        help="Optional Hugging Face endpoint, for example https://hf-mirror.com.",
+    )
+    parser.add_argument(
+        "--models",
+        default="codet5,codebert",
+        help="Comma-separated models to download: codet5, codebert (default: both).",
+    )
+    parser.add_argument(
+        "--force",
+        action="store_true",
+        help="Remove an existing model directory and download it again.",
+    )
+    return parser.parse_args()
 
 
-def validate_json(path: Path):
-    with path.open("r", encoding="utf-8") as f:
-        json.load(f)
+def nonempty(path: Path) -> bool:
+    return path.exists() and path.is_file() and path.stat().st_size > 0
 
 
-def _exists_and_nonempty(path: Path) -> bool:
-    return path.exists() and path.stat().st_size > 0
+def validate_json(path: Path) -> None:
+    with path.open("r", encoding="utf-8") as handle:
+        json.load(handle)
 
 
-def validate_dir(target_dir: Path):
-    required_common = [
-        "config.json",
-        "tokenizer_config.json",
-    ]
-    optional_json = [
-        "special_tokens_map.json",
-        "generation_config.json",
-        "added_tokens.json",
-    ]
+def model_weight_files(directory: Path) -> Iterable[Path]:
+    yield from directory.glob("*.safetensors")
+    yield from directory.glob("pytorch_model*.bin")
 
-    missing = []
-    for name in required_common:
-        p = target_dir / name
-        if not _exists_and_nonempty(p):
-            missing.append(name)
 
-    spiece = target_dir / "spiece.model"
-    vocab = target_dir / "vocab.json"
-    merges = target_dir / "merges.txt"
+def validate_model_directory(directory: Path) -> None:
+    required_json = ("config.json", "tokenizer_config.json")
+    missing = [name for name in required_json if not nonempty(directory / name)]
 
-    has_sentencepiece = _exists_and_nonempty(spiece)
-    has_bpe = _exists_and_nonempty(vocab) and _exists_and_nonempty(merges)
-
+    has_sentencepiece = nonempty(directory / "spiece.model")
+    has_bpe = nonempty(directory / "vocab.json") and nonempty(directory / "merges.txt")
     if not (has_sentencepiece or has_bpe):
-        missing.append("spiece.model 或 vocab.json+merges.txt")
+        missing.append("spiece.model or vocab.json + merges.txt")
 
-    safetensors_file = target_dir / "model.safetensors"
-    bin_file = target_dir / "pytorch_model.bin"
-    has_model = _exists_and_nonempty(safetensors_file) or _exists_and_nonempty(bin_file)
-    if not has_model:
-        missing.append("model.safetensors 或 pytorch_model.bin")
+    weights = [path for path in model_weight_files(directory) if nonempty(path)]
+    if not weights:
+        missing.append("model.safetensors or pytorch_model*.bin")
 
     if missing:
-        raise RuntimeError(f"缺少关键文件或文件为空: {missing}")
+        raise RuntimeError(
+            f"Incomplete model directory {directory}: missing {', '.join(missing)}"
+        )
 
-    for name in required_common + [x for x in optional_json if _exists_and_nonempty(target_dir / x)]:
-        validate_json(target_dir / name)
-
-    return {
-        "target_dir": str(target_dir.resolve()),
-        "has_sentencepiece": has_sentencepiece,
-        "has_bpe_tokenizer": has_bpe,
-        "model_file": str(safetensors_file if _exists_and_nonempty(safetensors_file) else bin_file),
-    }
+    for name in required_json:
+        validate_json(directory / name)
+    for optional in ("generation_config.json", "special_tokens_map.json"):
+        if nonempty(directory / optional):
+            validate_json(directory / optional)
 
 
-def download_one(model_id: str, save_dir: Path, model_kind: str, cache_dir: Optional[str] = None):
-    from transformers import AutoTokenizer, AutoModel, AutoModelForSeq2SeqLM
+def download_model(model_id: str, destination: Path, kind: str, cache_dir: Optional[Path]) -> None:
+    try:
+        from transformers import AutoModel, AutoModelForSeq2SeqLM, AutoTokenizer
+    except ImportError as exc:
+        raise RuntimeError(
+            "transformers is required. Install dependencies with "
+            "'python -m pip install -r requirements.txt'."
+        ) from exc
 
-    print(f"[INFO] model_id = {model_id}")
-    print(f"[INFO] save_dir = {save_dir}")
-
-    print("[INFO] 开始下载 tokenizer ...")
-    tok = AutoTokenizer.from_pretrained(
+    print(f"[download] tokenizer: {model_id}")
+    tokenizer = AutoTokenizer.from_pretrained(
         model_id,
         use_fast=False,
-        cache_dir=cache_dir,
+        cache_dir=str(cache_dir) if cache_dir else None,
     )
-    tok.save_pretrained(str(save_dir))
-    print("[INFO] tokenizer 已保存")
+    tokenizer.save_pretrained(destination)
 
-    print("[INFO] 开始下载 model ...")
-    if model_kind == "seq2seq":
+    print(f"[download] model: {model_id}")
+    if kind == "seq2seq":
         model = AutoModelForSeq2SeqLM.from_pretrained(
             model_id,
-            cache_dir=cache_dir,
+            cache_dir=str(cache_dir) if cache_dir else None,
         )
-    elif model_kind == "encoder":
+    elif kind == "encoder":
         model = AutoModel.from_pretrained(
             model_id,
-            cache_dir=cache_dir,
+            cache_dir=str(cache_dir) if cache_dir else None,
         )
     else:
-        raise ValueError(f"未知 model_kind: {model_kind}")
+        raise ValueError(f"Unsupported model kind: {kind}")
 
-    model.save_pretrained(str(save_dir))
-    print("[INFO] model 已保存")
-
-    print("[INFO] 开始校验文件完整性 ...")
-    info = validate_dir(save_dir)
-    print("[INFO] 校验通过")
-    for k, v in info.items():
-        print(f"  - {k}: {v}")
+    model.save_pretrained(destination)
+    validate_model_directory(destination)
 
 
-def main():
+def selected_models(raw_value: str) -> list[str]:
+    values = [item.strip().lower() for item in raw_value.split(",") if item.strip()]
+    invalid = sorted(set(values).difference(MODEL_SPECS))
+    if invalid:
+        raise ValueError(f"Unknown model aliases: {', '.join(invalid)}")
+    if not values:
+        raise ValueError("At least one model alias must be supplied")
+    return values
+
+
+def main() -> int:
     args = parse_args()
-    target_root = Path(args.target_dir).expanduser().resolve()
+    target_root = args.target_dir.expanduser().resolve()
+    cache_dir = args.cache_dir.expanduser().resolve() if args.cache_dir else None
 
     if args.hf_endpoint:
         os.environ["HF_ENDPOINT"] = args.hf_endpoint
 
-    ensure_dir(target_root)
+    target_root.mkdir(parents=True, exist_ok=True)
+    for alias in selected_models(args.models):
+        spec = MODEL_SPECS[alias]
+        destination = target_root / spec["subdir"]
 
-    try:
-        import transformers  # noqa: F401
-    except Exception as e:
-        raise RuntimeError(
-            "当前环境缺少 transformers。请先安装: pip install -U transformers sentencepiece safetensors huggingface_hub torch"
-        ) from e
+        if destination.exists() and args.force:
+            print(f"[remove] {destination}")
+            shutil.rmtree(destination)
 
-    jobs = [
-        {
-            "model_id": "Salesforce/codet5-base",
-            "subdir": "codet5-base",
-            "model_kind": "seq2seq",
-        },
-        {
-            "model_id": "microsoft/codebert-base",
-            "subdir": "codebert-base",
-            "model_kind": "encoder",
-        },
-    ]
+        if destination.exists() and not args.force:
+            try:
+                validate_model_directory(destination)
+                print(f"[reuse] {spec['model_id']} -> {destination}")
+                continue
+            except RuntimeError as exc:
+                raise RuntimeError(f"{exc}. Rerun with --force to replace it.") from exc
 
-    for job in jobs:
-        save_dir = target_root / job["subdir"]
-        if args.force and save_dir.exists():
-            print(f"[INFO] 删除已有目录: {save_dir}")
-            remove_dir(save_dir)
-        ensure_dir(save_dir)
-
+        destination.mkdir(parents=True, exist_ok=True)
         try:
-            download_one(
-                model_id=job["model_id"],
-                save_dir=save_dir,
-                model_kind=job["model_kind"],
-                cache_dir=args.cache_dir,
+            download_model(
+                model_id=spec["model_id"],
+                destination=destination,
+                kind=spec["kind"],
+                cache_dir=cache_dir,
             )
-        except Exception as e:
-            eprint(f"[ERROR] 下载失败: {job['model_id']}")
-            eprint(repr(e))
-            eprint("\n可能原因：")
-            eprint("1) 机器无法联网到 Hugging Face")
-            eprint("2) 需要设置镜像，例如 --hf_endpoint https://hf-mirror.com")
-            eprint("3) 磁盘空间不足")
+        except Exception:
+            shutil.rmtree(destination, ignore_errors=True)
             raise
+        print(f"[ready] {spec['model_id']} -> {destination}")
 
-    print("\n====== 后续参数示例 ======")
-    print(f"--model_variation {target_root / 'codebert-base'}")
-    print(f"--model_variation_seq2seq {target_root / 'codet5-base'}")
-    print("\n[OK] CodeT5 和 CodeBERT 已下载完成。")
+    print("\nUse these repository-local model arguments:")
+    print(f"  CodeT5:  {target_root / 'codet5-base'}")
+    print(f"  CodeBERT:{target_root / 'codebert-base'}")
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

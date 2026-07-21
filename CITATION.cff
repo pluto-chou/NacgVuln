@@ -1,15 +1,35 @@
 cff-version: 1.2.0
 title: "NacgVuln: Negative-aware and Chunk-enhanced Generative Line-level Vulnerability Localization"
-message: "If you use this software, please cite it as below."
+message: "If you use this software or its processed results, please cite the archived software record."
 type: software
 authors:
   - family-names: "Huang"
     given-names: "Shuai"
     alias: "pluto-chou"
     affiliation: "School of Computer Science and Engineering, Sichuan University of Science & Engineering, Yibin 644000, China"
-version: 1.0.0
-date-released: 2026-07-09
+    email: "325085406206@stu.suse.edu.cn"
+    contact: true
+abstract: >-
+  NacgVuln is a negative-aware and chunk-enhanced generative framework for
+  line-level vulnerability localization in C/C++ source code. The replication
+  package includes source code, experiment configuration, documentation, and
+  processed result tables. Model checkpoints and third-party Big-Vul CSV files
+  are not distributed.
+keywords:
+  - "software vulnerability localization"
+  - "line-level vulnerability detection"
+  - "CodeT5"
+  - "Big-Vul"
+  - "negative-aware training"
+  - "chunk inference"
+version: 1.0.1
+date-released: 2026-07-21
 license: MIT
 repository-code: "https://github.com/pluto-chou/NacgVuln"
-url: https://doi.org/10.5281/zenodo.21273222
-doi: 10.5281/zenodo.21273222
+repository-artifact: "https://doi.org/10.5281/zenodo.21273222"
+url: "https://doi.org/10.5281/zenodo.21273222"
+doi: "10.5281/zenodo.21273222"
+identifiers:
+  - type: doi
+    value: "10.5281/zenodo.21273222"
+    description: "Archived NacgVuln software record on Zenodo"
