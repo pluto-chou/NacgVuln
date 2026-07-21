@@ -19,7 +19,7 @@
     "chunk inference",
     "software security"
   ],
-  "version": "1.0.1",
+  "version": "1.0.2",
   "related_identifiers": [
     {
       "identifier": "https://github.com/pluto-chou/NacgVuln",
