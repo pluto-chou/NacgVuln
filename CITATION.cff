@@ -22,7 +22,7 @@ keywords:
   - "Big-Vul"
   - "negative-aware training"
   - "chunk inference"
-version: 1.0.1
+version: 1.0.2
 date-released: 2026-07-21
 license: MIT
 repository-code: "https://github.com/pluto-chou/NacgVuln"
