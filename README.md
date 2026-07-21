@@ -5,7 +5,7 @@
 **Software maintainer:** Shuai Huang (`pluto-chou`)  
 **Affiliation:** School of Computer Science and Engineering, Sichuan University of Science & Engineering, Yibin 644000, China  
 **License:** MIT  
-**Zenodo DOI:** [10.5281/zenodo.21273222](https://doi.org/10.5281/zenodo.21273222)
+**Zenodo DOI:** [10.5281/zenodo.21466071](https://doi.org/10.5281/zenodo.21466071)
 
 NacgVuln is a negative-aware and chunk-enhanced generative framework for line-level vulnerability localization in C/C++ source code. It extends a LocVul-style Sequence-to-Sequence pipeline by modeling clean functions with a `<NO_VULN>` target, applying chunk-based training and inference to long functions, and aligning generated snippets with concrete source-code lines.
 
