@@ -27,9 +27,9 @@ date-released: 2026-07-21
 license: MIT
 repository-code: "https://github.com/pluto-chou/NacgVuln"
 repository-artifact: "https://doi.org/10.5281/zenodo.21273222"
-url: "https://doi.org/10.5281/zenodo.21273222"
-doi: "10.5281/zenodo.21273222"
+url: "https://doi.org/10.5281/zenodo.21466071"
+doi: "10.5281/zenodo.21466071"
 identifiers:
   - type: doi
-    value: "10.5281/zenodo.21273222"
+    value: "10.5281/zenodo.21466071"
     description: "Archived NacgVuln software record on Zenodo"
