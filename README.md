@@ -302,3 +302,11 @@ Cite the archived software record using [`CITATION.cff`](CITATION.cff) or DOI `1
 ## License
 
 This repository is released under the MIT License. See [`LICENSE`](LICENSE).
+
+## Methodology Summary
+NacgVuln follows four main stages:
+
+1. CodeBERT-based function-level vulnerability screening.
+2. Negative-aware CodeT5 Seq2Seq training with the `<NO_VULN>` target.
+3. Training-time chunk augmentation and inference-time sliding-window chunking.
+4. Similar-line replacement, candidate deduplication, and Top-K ranking.
