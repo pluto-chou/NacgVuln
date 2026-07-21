@@ -1,59 +1,25 @@
-# Dataset
+## Dataset and Third-Party Data
 
-## Dataset Source
+NacgVuln uses the Big-Vul C/C++ vulnerability dataset introduced by Fan et al. (2020). The original Big-Vul dataset and its construction scripts are publicly available from:
 
-NacgVuln uses the Big-Vul dataset under a LocVul-style line-level vulnerability localization protocol. The raw dataset is not redistributed in this GitHub repository.
+`https://github.com/ZeoVan/MSR_20_Code_vulnerability_CSV_Dataset`
 
-## Dataset Construction
+The original dataset article is:
 
-Run:
+Fan J, Li Y, Wang S, Nguyen TN. 2020. A C/C++ Code Vulnerability Dataset with Code Changes and CVE Summaries. Proceedings of the 17th International Conference on Mining Software Repositories, 508–512. DOI: 10.1145/3379597.3387501.
+
+For consistency with previous line-level vulnerability localization studies, this repository uses the preprocessed Big-Vul `train.csv`, `val.csv`, and `test.csv` files distributed through the official LineVul replication package:
+
+`https://github.com/awsm-research/LineVul`
+
+The Google Drive identifiers used in `data/data_mining.py` are the same identifiers documented by the LineVul repository. The script downloads the three files, concatenates them in the order `train.csv`, `val.csv`, and `test.csv`, and writes the combined dataset to `data/dataset.csv`.
+
+NacgVuln subsequently applies a fixed-order split to the combined file: the last 10% of samples are used for testing; the last 10% of the remaining samples are used for validation; and the remaining samples are used for training. This results in an approximate 81%/9%/10% train-validation-test split.
+
+The third-party Big-Vul and LineVul CSV files are not stored in this repository. They can be reconstructed using:
 
 ```bash
 python data/data_mining.py
 ```
 
-The script downloads the component files, concatenates them, and writes:
-
-```text
-data/dataset.csv
-```
-
-## Expected Columns
-
-The training and evaluation scripts expect at least these columns:
-
-| Column | Description |
-|---|---|
-| `processed_func` | preprocessed C/C++ function body |
-| `target` | function-level binary label; `1` vulnerable, `0` clean |
-| `flaw_line` | vulnerable source line text or line-text list |
-| `flaw_line_index` | vulnerable line index or index list |
-| `project` | project identifier when available |
-| `CWE ID` | CWE identifier when available |
-
-## Split Protocol
-
-The repository uses a fixed-order split:
-
-1. last 10% of `dataset.csv`: test set;
-2. remaining 90%: split again, with its last 10% as validation;
-3. remaining samples: training set.
-
-All 10 random seeds share the same test set. Seeds only affect training initialization, shuffling, and stochastic optimization.
-
-## Missing Line Labels
-
-For line-level localization metrics, samples with missing `flaw_line` or `flaw_line_index` are removed when `REMOVE_MISSING_LINE_LABELS=yes`.
-
-## Data Redistribution Policy
-
-The raw Big-Vul dataset is not committed to this repository. The generated `data/dataset.csv` is also ignored by `.gitignore` because it can be regenerated and may be large. Public releases should include the data construction script and processed result summaries, not the raw dataset, unless redistribution rights are confirmed.
-
-## Result Files Related to the Dataset
-
-```text
-results/main/Nacg_per_seed_metrics.csv
-results/main/Nacg_mean_std_metrics.csv
-results/length_group/length_group_per_seed_metrics.csv
-results/cwe_analysis/*.csv
-```
+The data sources were accessed on 21 July 2026.
