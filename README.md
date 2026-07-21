@@ -297,7 +297,7 @@ The source code, scripts, configuration files, documentation, and processed expe
 
 ## Citation
 
-Cite the archived software record using [`CITATION.cff`](CITATION.cff) or DOI `10.5281/zenodo.21273222`.
+Cite the archived software record using [`CITATION.cff`](CITATION.cff) or DOI `10.5281/zenodo.21466071`.
 
 ## License
 
